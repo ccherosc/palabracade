@@ -1,0 +1,214 @@
+.forge-board {
+  position: relative;
+  display: grid;
+  gap: 1rem;
+  padding: clamp(1rem, 2vw, 1.4rem);
+  border: 1px solid rgba(249, 115, 22, 0.18);
+  border-radius: 1.6rem;
+  background:
+    linear-gradient(180deg, rgba(40, 18, 7, 0.9), rgba(16, 12, 20, 0.96)),
+    radial-gradient(circle at top left, rgba(251, 146, 60, 0.16), transparent 40%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  overflow: hidden;
+}
+
+.forge-overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: rgba(8, 6, 18, 0.72);
+  backdrop-filter: blur(12px);
+  z-index: 2;
+}
+
+.forge-overlay__card {
+  width: min(100%, 28rem);
+  display: grid;
+  gap: 0.9rem;
+  text-align: center;
+  padding: 1.6rem;
+  border-radius: 1.5rem;
+  border: 1px solid rgba(249, 115, 22, 0.28);
+  background: linear-gradient(180deg, rgba(37, 16, 10, 0.96), rgba(21, 10, 15, 0.96));
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.35);
+}
+
+.forge-overlay__emoji {
+  font-size: 2.5rem;
+}
+
+.forge-overlay__badge {
+  color: #fdba74;
+}
+
+.forge-prompt,
+.forge-assembly,
+.forge-message,
+.forge-bank,
+.forge-actions {
+  position: relative;
+  z-index: 1;
+}
+
+.forge-prompt {
+  display: grid;
+  gap: 0.5rem;
+  padding: 1rem 1.1rem;
+  border-radius: 1.2rem;
+  border: 1px solid rgba(249, 115, 22, 0.16);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.forge-prompt__eyebrow {
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #fdba74;
+}
+
+.forge-prompt h2 {
+  margin: 0;
+  font-size: clamp(1.2rem, 2vw, 1.8rem);
+}
+
+.forge-prompt p,
+.forge-message,
+.forge-progress span,
+.forge-clock,
+.forge-assembly__placeholder {
+  color: rgba(236, 234, 255, 0.76);
+}
+
+.forge-progress {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.forge-progress__rail {
+  height: 0.7rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.forge-progress__fill {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #fb923c, #f59e0b);
+  transition: width 180ms ease;
+}
+
+.forge-assembly {
+  min-height: 4.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  align-items: center;
+  padding: 1rem;
+  border-radius: 1.3rem;
+  border: 1px dashed rgba(251, 146, 60, 0.35);
+  background: rgba(16, 12, 20, 0.78);
+}
+
+.forge-bank {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+}
+
+.forge-chip {
+  border: 1px solid rgba(251, 146, 60, 0.24);
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.03));
+  color: var(--text-light);
+  padding: 0.85rem 1.15rem;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  transition: transform 140ms ease, border-color 140ms ease, background 140ms ease, opacity 140ms ease;
+}
+
+.forge-chip:hover:not(:disabled),
+.forge-chip:focus-visible:not(:disabled) {
+  transform: translateY(-1px);
+  border-color: rgba(251, 146, 60, 0.52);
+  background: linear-gradient(180deg, rgba(251, 146, 60, 0.16), rgba(255, 255, 255, 0.05));
+}
+
+.forge-chip--active {
+  cursor: default;
+  border-color: rgba(251, 146, 60, 0.42);
+  background: linear-gradient(180deg, rgba(251, 146, 60, 0.22), rgba(255, 255, 255, 0.06));
+}
+
+.forge-chip--spent {
+  opacity: 0.28;
+  transform: scale(0.98);
+}
+
+.forge-message {
+  min-height: 1.5rem;
+  font-weight: 600;
+}
+
+.forge-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.forge-clock {
+  font-family: var(--font-arcade);
+  font-size: 0.72rem;
+  color: #fdba74;
+}
+
+.forge-side {
+  display: grid;
+  gap: 1rem;
+}
+
+.forge-side h2 {
+  margin: 0;
+}
+
+.forge-side ul {
+  margin: 0;
+  padding-left: 1.2rem;
+  display: grid;
+  gap: 0.65rem;
+  color: rgba(236, 234, 255, 0.78);
+}
+
+.forge-side__pill {
+  padding: 0.9rem 1rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(249, 115, 22, 0.2);
+  color: #fdba74;
+  background: rgba(255, 255, 255, 0.03);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+@media (max-width: 720px) {
+  .forge-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .forge-chip {
+    width: 100%;
+    text-align: center;
+  }
+
+  .forge-bank {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+}
