@@ -1,6 +1,7 @@
 import React, { Suspense, lazy } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import MainMenu from './components/MainMenu.jsx';
+import './components/GameLoader.css';
 
 const SnakeSentences = lazy(() => import('./games/snake-sentences/SnakeSentences.jsx'));
 const WordWhack = lazy(() => import('./games/word-whack/WordWhack.jsx'));
@@ -15,14 +16,19 @@ const RadarRelay = lazy(() => import('./games/radar-relay/RadarRelay.jsx'));
 const PhraseForge = lazy(() => import('./games/phrase-forge/PhraseForge.jsx'));
 
 function GameLoader() {
+  const splashAsset = `${import.meta.env.BASE_URL}favicon.svg`;
+
   return (
-    <div style={{
-      minHeight: '100vh', display: 'flex', alignItems: 'center',
-      justifyContent: 'center', flexDirection: 'column', gap: '1rem',
-      color: 'var(--text-muted)',
-    }}>
-      <div style={{ fontSize: '2rem', animation: 'spin 1s linear infinite' }}>⚙</div>
-      <span style={{ fontFamily: 'var(--font-arcade)', fontSize: '0.65rem' }}>Loading game...</span>
+    <div className="game-loader" role="status" aria-live="polite">
+      <div className="game-loader__card">
+        <div className="game-loader__art-wrap">
+          <img className="game-loader__art" src={splashAsset} alt="PalabraCade splash art" />
+          <span className="game-loader__spinner" aria-hidden="true">⚙</span>
+        </div>
+        <p className="game-loader__eyebrow">Launching cabinet</p>
+        <h2 className="game-loader__title">PalabraCade</h2>
+        <p className="game-loader__copy">Loading the next round of Spanish arcade practice…</p>
+      </div>
     </div>
   );
 }

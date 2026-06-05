@@ -1,7 +1,7 @@
 .main-menu {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 1.2rem 1rem 4rem;
+  padding: 1rem 1rem 4rem;
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
@@ -326,7 +326,7 @@
 
 @media (max-width: 720px) {
   .main-menu {
-    padding-inline: 0.75rem;
+    padding: 0.75rem 0.75rem 3rem;
   }
 
   .main-menu__hero,
@@ -355,5 +355,39 @@
   .main-menu__cta-row .arcade-btn,
   .main-menu__recent {
     width: 100%;
+  }
+
+  .main-menu__hero {
+    padding: 1rem;
+  }
+
+  .main-menu__logo-sub,
+  .main-menu__pitch,
+  .main-menu__loop-copy p,
+  .menu-section__subtitle {
+    font-size: 0.95rem;
+    line-height: 1.55;
+  }
+}
+
+@media (max-width: 480px) {
+  .main-menu__hero,
+  .menu-section,
+  .main-menu__loop,
+  .main-menu__stat-card {
+    border-radius: 18px;
+  }
+
+  .main-menu__hero {
+    padding: 0.9rem;
+  }
+
+  .main-menu__logo-title {
+    font-size: clamp(1.35rem, 8vw, 2rem);
+  }
+
+  .main-menu__hero-card,
+  .main-menu__loop-step {
+    padding: 0.9rem;
   }
 }

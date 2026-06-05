@@ -1,5 +1,5 @@
 .pi-game {
-  position: relative; width: 100%; height: 100vh;
+  position: relative; width: 100%; height: 100dvh;
   background: #000510; display: flex; flex-direction: column; overflow: hidden;
 }
 

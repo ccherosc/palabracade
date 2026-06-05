@@ -1,7 +1,7 @@
 .arcade-shell {
   --accent-soft: color-mix(in srgb, var(--shell-accent) 20%, transparent);
   --accent-border: color-mix(in srgb, var(--shell-accent) 45%, rgba(255,255,255,0.08));
-  min-height: 100vh;
+  min-height: 100dvh;
   padding: 1rem 1rem 2rem;
   max-width: 1280px;
   margin: 0 auto;
