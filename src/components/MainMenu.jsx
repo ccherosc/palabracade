@@ -73,29 +73,51 @@ export default function MainMenu() {
   return (
     <div className="main-menu">
       <header className="main-menu__hero">
-        <div className="main-menu__hero-copy">
-          <span className="main-menu__eyebrow">Learn Spanish through arcade mini-games</span>
+        <div className="main-menu__hero-shell">
+          <div className="main-menu__hero-copy">
+            <span className="main-menu__eyebrow">Learn Spanish through arcade mini-games</span>
 
-          <div className="main-menu__logo-wrap">
-            <span className="main-menu__logo-icon animate-float">🎮</span>
-            <div>
-              <h1 className="main-menu__logo-title">
-                Palabra<span className="main-menu__logo-accent">Cade</span>
-              </h1>
-              <p className="main-menu__logo-sub">Fast, replayable Spanish reps with a real arcade feel.</p>
+            <div className="main-menu__logo-wrap">
+              <span className="main-menu__logo-icon animate-float">🎮</span>
+              <div>
+                <h1 className="main-menu__logo-title">
+                  Palabra<span className="main-menu__logo-accent">Cade</span>
+                </h1>
+                <p className="main-menu__logo-sub">Fast, replayable Spanish reps with a real arcade feel.</p>
+              </div>
+            </div>
+
+            <p className="main-menu__pitch">
+              Start with the most-played cabinets first. The hero now carries the key dashboard stats so the top of the page feels fuller and more useful.
+            </p>
+
+            <div className="main-menu__cta-row">
+              <a className="arcade-btn arcade-btn--gold" href="#play-now">▶ Start playing</a>
             </div>
           </div>
 
-          <p className="main-menu__pitch">
-            Start with the most-played cabinets first. Progress and spotlight info stay in the side rail so the games stay front and center.
-          </p>
+          <div className="main-menu__hero-dashboard" aria-label="Arcade snapshot">
+            <div className="main-menu__hero-dashboard-head">
+              <span className="main-menu__panel-label">Arcade snapshot</span>
+              <strong className="main-menu__panel-kicker">At-a-glance progress</strong>
+            </div>
 
-          <div className="main-menu__cta-row">
-            <a className="arcade-btn arcade-btn--gold" href="#play-now">▶ Start playing</a>
-            <div className="main-menu__hero-pills" aria-label="Arcade snapshot">
-              <span className="main-menu__hero-pill">{playable.length} live</span>
-              <span className="main-menu__hero-pill">{totalPlays} sessions</span>
-              <span className="main-menu__hero-pill">{masteryPct}% explored</span>
+            <div className="main-menu__hero-stats-grid">
+              {statCards.map(card => (
+                <article key={card.label} className="main-menu__hero-stat-card">
+                  <span className="main-menu__stat-label">{card.label}</span>
+                  <strong className="main-menu__hero-stat-value">{card.value}</strong>
+                  <span className="main-menu__stat-note">{card.note}</span>
+                </article>
+              ))}
+            </div>
+
+            <div className="main-menu__hero-recent">
+              <span className="main-menu__panel-label">Recent run</span>
+              <strong className="main-menu__hero-recent-title">{recentTitle}</strong>
+              <span className="main-menu__hero-recent-note">
+                {recent ? 'Keep your momentum going.' : 'Pick any cabinet to start tracking progress.'}
+              </span>
             </div>
           </div>
         </div>
@@ -131,30 +153,6 @@ export default function MainMenu() {
         </main>
 
         <aside className="main-menu__aside" aria-label="Arcade dashboard">
-          <section className="main-menu__panel main-menu__panel--recent">
-            <span className="main-menu__panel-label">Recent run</span>
-            <h2 className="main-menu__panel-title">{recentTitle}</h2>
-            <p className="main-menu__panel-copy">
-              {recent ? 'Jump back in and keep building on your best cabinets.' : 'No history yet — pick a cabinet and the dashboard starts personalizing immediately.'}
-            </p>
-          </section>
-
-          <section className="main-menu__panel main-menu__panel--stats" aria-label="Arcade progress">
-            <div className="main-menu__panel-head">
-              <span className="main-menu__panel-label">Dashboard</span>
-              <strong className="main-menu__panel-kicker">Progress at a glance</strong>
-            </div>
-            <div className="main-menu__stats-stack">
-              {statCards.map(card => (
-                <article key={card.label} className="main-menu__stat-card">
-                  <span className="main-menu__stat-label">{card.label}</span>
-                  <strong className="main-menu__stat-value">{card.value}</strong>
-                  <span className="main-menu__stat-note">{card.note}</span>
-                </article>
-              ))}
-            </div>
-          </section>
-
           <section className="main-menu__panel">
             <div className="main-menu__panel-head">
               <span className="main-menu__panel-label">Top picks</span>

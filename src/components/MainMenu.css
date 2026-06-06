@@ -18,6 +18,13 @@
   box-shadow: 0 24px 80px rgba(0, 0, 0, 0.32);
 }
 
+.main-menu__hero-shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(300px, 0.9fr);
+  gap: 1rem;
+  align-items: stretch;
+}
+
 .main-menu__hero-copy {
   display: flex;
   flex-direction: column;
@@ -88,29 +95,67 @@
 .main-menu__cta-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 0.8rem;
   flex-wrap: wrap;
 }
 
-.main-menu__hero-pills {
+.main-menu__hero-dashboard {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.55rem;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 0.95rem;
+  border-radius: 24px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.025));
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
-.main-menu__hero-pill {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 38px;
-  padding: 0.5rem 0.75rem;
-  border-radius: 999px;
-  font-size: 0.76rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.05);
+.main-menu__hero-dashboard-head {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.main-menu__hero-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.7rem;
+}
+
+.main-menu__hero-stat-card {
+  padding: 0.85rem;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.035);
   border: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-height: 92px;
+}
+
+.main-menu__hero-stat-value {
+  font-size: clamp(1.2rem, 2.4vw, 1.7rem);
+  line-height: 1;
+}
+
+.main-menu__hero-recent {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 0.85rem 0.9rem;
+  border-radius: 18px;
+  background: rgba(16, 20, 40, 0.8);
+  border: 1px solid rgba(34, 211, 238, 0.14);
+}
+
+.main-menu__hero-recent-title {
+  font-size: 1rem;
+  line-height: 1.3;
+}
+
+.main-menu__hero-recent-note {
+  color: var(--text-muted);
+  font-size: 0.88rem;
 }
 
 .main-menu__experience {
@@ -174,28 +219,6 @@
 .main-menu__panel-copy {
   font-size: 0.92rem;
   line-height: 1.5;
-}
-
-.main-menu__stats-stack {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.7rem;
-}
-
-.main-menu__stat-card {
-  padding: 0.8rem;
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.035);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  display: flex;
-  flex-direction: column;
-  gap: 0.28rem;
-  min-height: 94px;
-}
-
-.main-menu__stat-value {
-  font-size: clamp(1.15rem, 2.2vw, 1.55rem);
-  line-height: 1.05;
 }
 
 .main-menu__featured-stack {
@@ -287,21 +310,18 @@
 }
 
 @media (max-width: 1180px) {
+  .main-menu__hero-shell,
   .main-menu__experience {
     grid-template-columns: 1fr;
   }
 
   .main-menu__aside {
     position: static;
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    align-items: start;
   }
 }
 
 @media (max-width: 860px) {
-  .main-menu__aside,
-  .main-menu__stats-stack {
+  .main-menu__hero-stats-grid {
     grid-template-columns: 1fr;
   }
 }
@@ -314,10 +334,12 @@
   .main-menu__hero,
   .menu-section,
   .main-menu__panel,
-  .main-menu__stat-card {
+  .main-menu__hero-dashboard,
+  .main-menu__hero-stat-card {
     border-radius: 18px;
   }
 
+  .main-menu__hero-shell,
   .main-menu__logo-wrap,
   .menu-section__header,
   .main-menu__cta-row {
@@ -329,14 +351,8 @@
     flex-direction: column;
   }
 
-  .main-menu__cta-row .arcade-btn,
-  .main-menu__hero-pills {
+  .main-menu__cta-row .arcade-btn {
     width: 100%;
-  }
-
-  .main-menu__hero-pills {
-    display: grid;
-    grid-template-columns: 1fr;
   }
 
   .menu-section__count {
@@ -345,8 +361,7 @@
   }
 
   .menu-section__grid,
-  .main-menu__aside,
-  .main-menu__stats-stack {
+  .main-menu__hero-stats-grid {
     grid-template-columns: 1fr;
   }
 
@@ -370,7 +385,8 @@
 
   .main-menu__panel,
   .menu-section,
-  .main-menu__stat-card,
+  .main-menu__hero-dashboard,
+  .main-menu__hero-stat-card,
   .main-menu__featured-item {
     padding: 0.85rem;
   }
