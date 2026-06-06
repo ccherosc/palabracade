@@ -25,6 +25,13 @@ const SECTIONS = [
   },
 ];
 
+const STAT_ICONS = {
+  Live: '🟢',
+  Sessions: '🎯',
+  Points: '⚡',
+  Explored: '🗺️',
+};
+
 function prettifyGameId(gameId) {
   return gameId
     .replace(/-/g, ' ')
@@ -62,6 +69,7 @@ export default function MainMenu() {
   const recentTitle = recent
     ? (games.find(game => game.id === recent.gameId)?.title ?? prettifyGameId(recent.gameId))
     : 'Fresh profile — pick any cabinet';
+  const resumeHref = recent ? `/games/${recent.gameId}` : '#play-now';
 
   const statCards = [
     { label: 'Live', value: playable.length, note: 'ready now' },
@@ -93,6 +101,9 @@ export default function MainMenu() {
 
             <div className="main-menu__cta-row">
               <a className="arcade-btn arcade-btn--gold" href="#play-now">▶ Start playing</a>
+              <a className="arcade-btn arcade-btn--ghost" href={resumeHref}>
+                {recent ? '↺ Continue recent run' : '★ Browse top cabinets'}
+              </a>
             </div>
           </div>
 
@@ -105,7 +116,10 @@ export default function MainMenu() {
             <div className="main-menu__hero-stats-grid">
               {statCards.map(card => (
                 <article key={card.label} className="main-menu__hero-stat-card">
-                  <span className="main-menu__stat-label">{card.label}</span>
+                  <div className="main-menu__hero-stat-topline">
+                    <span className="main-menu__hero-stat-icon" aria-hidden="true">{STAT_ICONS[card.label]}</span>
+                    <span className="main-menu__stat-label">{card.label}</span>
+                  </div>
                   <strong className="main-menu__hero-stat-value">{card.value}</strong>
                   <span className="main-menu__stat-note">{card.note}</span>
                 </article>
@@ -153,17 +167,18 @@ export default function MainMenu() {
         </main>
 
         <aside className="main-menu__aside" aria-label="Arcade dashboard">
-          <section className="main-menu__panel">
+          <section className="main-menu__panel main-menu__panel--picks">
             <div className="main-menu__panel-head">
               <span className="main-menu__panel-label">Top picks</span>
               <strong className="main-menu__panel-kicker">Quick-start cabinets</strong>
             </div>
             <div className="main-menu__featured-stack">
               {featuredGames.map(game => (
-                <div key={game.id} className="main-menu__featured-item">
+                <a key={game.id} className="main-menu__featured-item" href={`/games/${game.id}`}>
+                  <span className="main-menu__featured-rank">Top pick</span>
                   <strong>{game.title}</strong>
                   <span>{game.skill}</span>
-                </div>
+                </a>
               ))}
             </div>
           </section>
