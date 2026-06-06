@@ -37,12 +37,17 @@
   gap: 2.5rem;
   padding: 2rem 1.5rem;
   flex-wrap: wrap;
+  width: min(1120px, 100%);
+  margin: 0 auto;
 }
 
 /* ── Gallows ── */
 .ah-gallows { display: flex; flex-direction: column; align-items: center; gap: 0.75rem; }
 
 .ah-canvas {
+  width: min(320px, 42vw);
+  height: auto;
+  aspect-ratio: 11 / 13;
   border-radius: 8px;
   background: var(--bg-surface);
   border: 1px solid var(--border);
@@ -66,7 +71,8 @@
 .ah-right {
   display: flex; flex-direction: column;
   align-items: center; gap: 1.5rem;
-  flex: 1; max-width: 520px;
+  flex: 1 1 420px; max-width: 560px;
+  min-width: min(100%, 320px);
 }
 
 .ah-hint {
@@ -105,13 +111,21 @@
 
 .ah-progress {
   font-size: 0.72rem; color: var(--text-muted); font-weight: 600;
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 0.45rem;
 }
 
 /* ── Keyboard ── */
 .ah-keyboard {
-  display: flex; flex-wrap: wrap;
-  gap: 5px; justify-content: center;
-  max-width: 480px;
+  display: flex; flex-direction: column;
+  gap: 0.45rem; align-items: center;
+  width: min(100%, 520px);
+}
+
+.ah-keyboard__row {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+  width: 100%;
 }
 
 .ah-key {
@@ -206,7 +220,75 @@
 .ah-overlay__btn:active { transform: scale(0.98); }
 
 @media (max-width: 600px) {
-  .ah-layout { flex-direction: column; align-items: center; gap: 1.5rem; padding: 1rem; }
-  .ah-gallows { flex-direction: row; align-items: flex-start; gap: 1rem; }
-  .ah-canvas  { width: 150px; height: 175px; }
+  .ah-header {
+    padding: 0.65rem 0.8rem;
+    gap: 0.55rem;
+  }
+
+  .ah-header__title {
+    font-size: 0.62rem;
+  }
+
+  .ah-layout {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+    padding: 0.85rem 0.75rem 1.5rem;
+  }
+
+  .ah-gallows {
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .ah-canvas  {
+    width: min(220px, 68vw);
+  }
+
+  .ah-right {
+    gap: 1rem;
+    max-width: none;
+    min-width: 0;
+  }
+
+  .ah-hint__en {
+    font-size: 1.15rem;
+  }
+
+  .ah-letter {
+    width: clamp(24px, 7.1vw, 32px);
+    font-size: clamp(0.95rem, 5vw, 1.2rem);
+  }
+
+  .ah-keyboard {
+    gap: 0.35rem;
+  }
+
+  .ah-keyboard__row {
+    gap: 4px;
+  }
+
+  .ah-key {
+    width: clamp(32px, 8.4vw, 40px);
+    height: 42px;
+    font-size: 0.72rem;
+    padding: 0;
+  }
+
+  .ah-result,
+  .ah-overlay__box {
+    width: 100%;
+  }
+
+  .ah-result__actions {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .ah-result__btn {
+    width: 100%;
+    min-height: 44px;
+  }
 }

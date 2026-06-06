@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AudioManager } from '../../engine/AudioManager.js';
 import { ProgressSystem } from '../../engine/ProgressSystem.js';
@@ -41,6 +41,7 @@ const WORDS = [
 
 const MAX_WRONG = 6;
 const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZÑ'.split('');
+const KEY_ROWS = ['QWERTYUIOP', 'ASDFGHJKLÑ', 'ZXCVBNM'];
 
 // Normalize accents for matching (á→a, é→e, etc.)
 function norm(s) {
@@ -118,10 +119,18 @@ export default function Ahorcado() {
   const [score, setScore]       = useState(0);
   const [streak, setStreak]     = useState(0);
   const [roundWon, setRoundWon] = useState(false);
-  const canvasRef = useRef ? React.useRef(null) : { current: null };
-  const queueRef  = React.useRef([]);
+  const canvasRef = useRef(null);
+  const queueRef  = useRef([]);
 
   const progress = ProgressSystem.getGame('ahorcado');
+  const normalizedWordLetters = useMemo(
+    () => (word ? word.es.toUpperCase().split('').map(norm) : []),
+    [word],
+  );
+  const normalizedGuesses = useMemo(
+    () => new Set([...guessed].map(norm)),
+    [guessed],
+  );
 
   // Redraw whenever wrongCount changes
   const canvasRefCb = useCallback((node) => {
@@ -154,30 +163,22 @@ export default function Ahorcado() {
     const nextGuessed = new Set([...guessed, letter]);
     setGuessed(nextGuessed);
 
-    const wordLetters  = word.es.toUpperCase().split('').map(norm);
-    const hit          = wordLetters.includes(norm(letter));
+    const nextNormalizedGuesses = new Set([...nextGuessed].map(norm));
+    const hit = normalizedWordLetters.includes(norm(letter));
 
     if (hit) {
       AudioManager.eat(streak + 1);
-      const allRevealed = wordLetters.every(l => {
-        const isSpecial = !/[A-ZÑÁÉÍÓÚÜ]/.test(l.normalize('NFD')[0]);
-        if (isSpecial) return true; // spaces etc auto-revealed
-        return nextGuessed.has(norm(l) === 'a' ? 'A'
-          : norm(l) === 'e' ? 'E' : norm(l) === 'i' ? 'I'
-          : norm(l) === 'o' ? 'O' : norm(l) === 'u' ? 'U' : l);
-      });
-
-      // Simpler: check if every unique letter in word is guessed
-      const uniqueNorm = [...new Set(wordLetters.filter(l => /[A-ZÁÉÍÓÚÜÑ]/.test(l)))];
-      const allDone    = uniqueNorm.every(nl => [...nextGuessed].some(g => norm(g) === nl));
+      const uniqueNorm = [...new Set(normalizedWordLetters.filter(l => /[A-ZÑ]/.test(l)))];
+      const allDone = uniqueNorm.every(nl => nextNormalizedGuesses.has(nl));
 
       if (allDone) {
         const pts = (MAX_WRONG - wrongCount) * 15 + 20;
-        setScore(s => s + pts);
+        const nextScore = score + pts;
+        setScore(nextScore);
         setStreak(k => k + 1);
         setRoundWon(true);
         AudioManager.levelUp();
-        ProgressSystem.saveGame('ahorcado', { score: score + pts });
+        ProgressSystem.saveGame('ahorcado', { score: nextScore, streak: streak + 1 });
         setPhase('roundWon');
       }
     } else {
@@ -188,7 +189,7 @@ export default function Ahorcado() {
       if (next >= MAX_WRONG) {
         setStreak(0);
         AudioManager.gameOver();
-        ProgressSystem.saveGame('ahorcado', { score });
+        ProgressSystem.saveGame('ahorcado', { score, streak: 0 });
         setPhase('roundLost');
       }
     }
@@ -208,8 +209,10 @@ export default function Ahorcado() {
   // Compute display
   const wordLetters = word ? word.es.toUpperCase().split('') : [];
   const wrongLetters = word
-    ? [...guessed].filter(l => !wordLetters.map(norm).includes(norm(l)))
+    ? [...guessed].filter(l => !normalizedWordLetters.includes(norm(l)))
     : [];
+  const revealedCount = wordLetters.filter(letter => /[A-ZÁÉÍÓÚÜÑ]/i.test(letter) && normalizedGuesses.has(norm(letter))).length;
+  const totalLetters = wordLetters.filter(letter => /[A-ZÁÉÍÓÚÜÑ]/i.test(letter)).length;
 
   return (
     <div className="ah-game">
@@ -264,23 +267,31 @@ export default function Ahorcado() {
             </div>
 
             <div className="ah-progress">
-              {MAX_WRONG - wrongCount} {MAX_WRONG - wrongCount === 1 ? 'chance' : 'chances'} left
+              <span>{MAX_WRONG - wrongCount} {MAX_WRONG - wrongCount === 1 ? 'chance' : 'chances'} left</span>
+              <span>•</span>
+              <span>{revealedCount}/{totalLetters} letters found</span>
+              {streak > 0 && <><span>•</span><span>streak x{streak}</span></>}
             </div>
 
             {/* Keyboard */}
             <div className="ah-keyboard">
-              {LETTERS.map(l => {
-                const used     = guessed.has(l);
-                const isWrong  = used && wrongLetters.includes(l);
-                const isRight  = used && !isWrong;
-                return (
-                  <button key={l}
-                    className={`ah-key ${isWrong ? 'ah-key--wrong' : ''} ${isRight ? 'ah-key--right' : ''}`}
-                    onClick={() => guess(l)}
-                    disabled={used || phase !== 'playing'}
-                  >{l}</button>
-                );
-              })}
+              {KEY_ROWS.map(row => (
+                <div key={row} className="ah-keyboard__row">
+                  {row.split('').map(l => {
+                    const used = guessed.has(l);
+                    const isWrong = used && wrongLetters.includes(l);
+                    const isRight = used && !isWrong;
+                    return (
+                      <button key={l}
+                        className={`ah-key ${isWrong ? 'ah-key--wrong' : ''} ${isRight ? 'ah-key--right' : ''}`}
+                        onClick={() => guess(l)}
+                        disabled={used || phase !== 'playing'}
+                        aria-label={`Guess ${l}`}
+                      >{l}</button>
+                    );
+                  })}
+                </div>
+              ))}
             </div>
 
             {/* Round result */}
