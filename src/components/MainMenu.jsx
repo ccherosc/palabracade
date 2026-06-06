@@ -8,30 +8,21 @@ const SECTIONS = [
   {
     key: 'working',
     title: 'Play now',
-    subtitle: 'Most-played first, with the best cabinets ready to jump into immediately.',
+    subtitle: 'Most-played cabinets first.',
     icon: '🕹️',
-    emptyMsg: 'No games are live yet — check back soon!',
   },
   {
     key: 'wip',
     title: 'Workshop',
-    subtitle: 'Promising experiments that are close enough to preview without cluttering the main floor.',
+    subtitle: 'Promising builds still getting tuned.',
     icon: '⚙️',
-    emptyMsg: 'Nothing is on the workbench right now.',
   },
   {
     key: 'soon',
     title: 'On deck',
-    subtitle: 'Concepts queued up for the next content drop.',
+    subtitle: 'Future cabinets in the queue.',
     icon: '🚀',
-    emptyMsg: 'More games are being planned!',
   },
-];
-
-const LOOP_STEPS = [
-  { title: 'Pick a cabinet', copy: 'Choose vocabulary, speed, memory, or sentence-building reps.' },
-  { title: 'Chase another run', copy: 'Fast restarts and visible progress make replaying the default.' },
-  { title: 'Build momentum', copy: 'Points, streaks, and session history show real improvement over time.' },
 ];
 
 function prettifyGameId(gameId) {
@@ -73,10 +64,10 @@ export default function MainMenu() {
     : 'Fresh profile — pick any cabinet';
 
   const statCards = [
-    { label: 'Live games', value: playable.length, note: 'Ready tonight' },
-    { label: 'Sessions', value: totalPlays, note: 'Runs completed' },
-    { label: 'Total points', value: totalPoints.toLocaleString(), note: 'Lifetime score' },
-    { label: 'Arcade explored', value: `${masteryPct}%`, note: `${gamesPlayed.length}/${playable.length || 0} games played` },
+    { label: 'Live', value: playable.length, note: 'ready now' },
+    { label: 'Sessions', value: totalPlays, note: 'completed' },
+    { label: 'Points', value: totalPoints.toLocaleString(), note: 'lifetime' },
+    { label: 'Explored', value: `${masteryPct}%`, note: `${gamesPlayed.length}/${playable.length || 0} played` },
   ];
 
   return (
@@ -84,25 +75,26 @@ export default function MainMenu() {
       <header className="main-menu__hero">
         <div className="main-menu__hero-copy">
           <span className="main-menu__eyebrow">Learn Spanish through arcade mini-games</span>
+
           <div className="main-menu__logo-wrap">
             <span className="main-menu__logo-icon animate-float">🎮</span>
             <div>
               <h1 className="main-menu__logo-title">
                 Palabra<span className="main-menu__logo-accent">Cade</span>
               </h1>
-              <p className="main-menu__logo-sub">Commercial-feeling practice loops for vocabulary, grammar, speed, and confidence.</p>
+              <p className="main-menu__logo-sub">Fast, replayable Spanish reps with a real arcade feel.</p>
             </div>
           </div>
 
           <p className="main-menu__pitch">
-            Jump straight into the arcade. The most-played cabinets now surface first, while progress, spotlight picks, and session stats stay visible in side panels instead of pushing the game wall down the page.
+            Start with the most-played cabinets first. Progress and spotlight info stay in the side rail so the games stay front and center.
           </p>
 
           <div className="main-menu__cta-row">
             <a className="arcade-btn arcade-btn--gold" href="#play-now">▶ Start playing</a>
             <div className="main-menu__hero-pills" aria-label="Arcade snapshot">
-              <span className="main-menu__hero-pill">{playable.length} live games</span>
-              <span className="main-menu__hero-pill">{totalPlays} total sessions</span>
+              <span className="main-menu__hero-pill">{playable.length} live</span>
+              <span className="main-menu__hero-pill">{totalPlays} sessions</span>
               <span className="main-menu__hero-pill">{masteryPct}% explored</span>
             </div>
           </div>
@@ -143,7 +135,7 @@ export default function MainMenu() {
             <span className="main-menu__panel-label">Recent run</span>
             <h2 className="main-menu__panel-title">{recentTitle}</h2>
             <p className="main-menu__panel-copy">
-              {recent ? 'Jump back in or keep climbing your score on the cabinets you already like.' : 'No history yet — start with a favorite cabinet and the dashboard will begin to personalize itself.'}
+              {recent ? 'Jump back in and keep building on your best cabinets.' : 'No history yet — pick a cabinet and the dashboard starts personalizing immediately.'}
             </p>
           </section>
 
@@ -165,24 +157,8 @@ export default function MainMenu() {
 
           <section className="main-menu__panel">
             <div className="main-menu__panel-head">
-              <span className="main-menu__panel-label">Game loop</span>
-              <strong className="main-menu__panel-kicker">Fast, replayable, low-friction reps</strong>
-            </div>
-            <div className="main-menu__loop-steps main-menu__loop-steps--stacked">
-              {LOOP_STEPS.map((step, index) => (
-                <article key={step.title} className="main-menu__loop-step">
-                  <span className="main-menu__loop-step-index">0{index + 1}</span>
-                  <h3>{step.title}</h3>
-                  <p>{step.copy}</p>
-                </article>
-              ))}
-            </div>
-          </section>
-
-          <section className="main-menu__panel">
-            <div className="main-menu__panel-head">
-              <span className="main-menu__panel-label">Tonight’s spotlight</span>
-              <strong className="main-menu__panel-kicker">Most played or most likely to hook a new learner</strong>
+              <span className="main-menu__panel-label">Top picks</span>
+              <strong className="main-menu__panel-kicker">Quick-start cabinets</strong>
             </div>
             <div className="main-menu__featured-stack">
               {featuredGames.map(game => (
