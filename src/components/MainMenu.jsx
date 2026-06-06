@@ -14,7 +14,7 @@ const SECTIONS = [
   {
     key: 'wip',
     title: 'Workshop',
-    subtitle: 'Promising builds still getting tuned.',
+    subtitle: 'Experimental cabinets that need a sharper hook before promotion.',
     icon: '⚙️',
   },
   {
@@ -61,10 +61,10 @@ export default function MainMenu() {
   };
 
   const sortedGames = [...gamesWithStats].sort(sortByEngagement);
-  const playable = sortedGames.filter(game => game.status !== 'soon');
-  const featuredGames = playable.slice(0, 3);
-  const masteryPct = playable.length
-    ? Math.round((gamesPlayed.length / playable.length) * 100)
+  const workingGames = sortedGames.filter(game => game.status === 'working');
+  const featuredGames = workingGames.slice(0, 3);
+  const masteryPct = workingGames.length
+    ? Math.round((gamesPlayed.length / workingGames.length) * 100)
     : 0;
   const recentTitle = recent
     ? (games.find(game => game.id === recent.gameId)?.title ?? prettifyGameId(recent.gameId))
@@ -72,10 +72,10 @@ export default function MainMenu() {
   const resumeHref = recent ? `/games/${recent.gameId}` : '#play-now';
 
   const statCards = [
-    { label: 'Live', value: playable.length, note: 'ready now' },
+    { label: 'Live', value: workingGames.length, note: 'fully promoted' },
     { label: 'Sessions', value: totalPlays, note: 'completed' },
     { label: 'Points', value: totalPoints.toLocaleString(), note: 'lifetime' },
-    { label: 'Explored', value: `${masteryPct}%`, note: `${gamesPlayed.length}/${playable.length || 0} played` },
+    { label: 'Explored', value: `${masteryPct}%`, note: `${gamesPlayed.length}/${workingGames.length || 0} promoted` },
   ];
 
   return (

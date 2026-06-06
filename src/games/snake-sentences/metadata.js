@@ -4,8 +4,8 @@ export default {
   titleEs: 'Serpiente de Sentencias',
   status: 'working',
   ageRange: '6-14',
-  skill: 'Sentence building',
+  skill: 'Arcade sentence routing',
   level: 'Beginner',
-  description: 'Eat Spanish words in the correct order to build a sentence. Wrong word = lost heart. Complete the sentence = points!',
+  description: 'Steer a live snake through the words of a Spanish sentence in order. It is less puzzle-board, more survival run under pressure.',
   route: '/games/snake-sentences',
 };

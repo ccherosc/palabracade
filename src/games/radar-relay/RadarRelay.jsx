@@ -185,17 +185,18 @@ export default function RadarRelay() {
   return (
     <ArcadeGameShell
       title="Radar Relay"
-      subtitle="Track the English prompt, lock onto the right Spanish signal, and keep your relay alive before the sweep timer burns out."
-      eyebrow="Fast translation recall"
+      subtitle="Prototype radar cabinet: track the English prompt, lock onto the right Spanish signal, and help us test whether the scan loop is distinct enough to graduate."
+      eyebrow="Prototype signal drill"
       accent="#14b8a6"
       stats={stats}
       aside={
         <div className="radar-side">
-          <h2>How to win</h2>
+          <h2>Prototype brief</h2>
           <ul>
             <li>Each lock adds score and extends your combo value.</li>
             <li>You have 3 shields for bad picks or timeouts.</li>
             <li>Move fast — the sweep timer is part of the score.</li>
+            <li>This cabinet is still in Workshop while we push it farther away from the other translation drills.</li>
           </ul>
           <div className="radar-side__pill">Best run: {best.toLocaleString()} pts</div>
           <div className="radar-side__pill">Session timer: {sessionLeft}s</div>
@@ -225,11 +226,11 @@ export default function RadarRelay() {
           <div className="radar-overlay">
             <div className="radar-overlay__card">
               <div className="radar-overlay__emoji">📡</div>
-              <h2>{phase === 'done' ? 'Run complete' : 'Ready to scan?'}</h2>
+              <h2>{phase === 'done' ? 'Prototype run complete' : 'Prototype scan ready?'}</h2>
               <p>
                 {phase === 'done'
                   ? `You locked ${signals} signals and finished with ${score.toLocaleString()} points.`
-                  : 'Choose the correct Spanish translation before the radar sweep expires.'}
+                  : 'Choose the correct Spanish translation before the radar sweep expires. This mechanic is still being differentiated in Workshop.'}
               </p>
               {phase === 'done' && score >= best && score > 0 && <strong className="radar-overlay__badge">🏆 New best signal chain</strong>}
               <button className="arcade-btn arcade-btn--cyan arcade-btn--full" onClick={startGame}>

@@ -359,13 +359,14 @@ export default function VerbRunner() {
         <div className="vr-overlay">
           <div className="vr-overlay__box">
             <div className="vr-overlay__emoji">🏃</div>
-            <h2 className="vr-overlay__title">Verb Runner</h2>
+            <h2 className="vr-overlay__title">Verb Runner Prototype</h2>
             <p className="vr-overlay__sub">Corredor de Verbos</p>
             <div className="vr-overlay__instructions">
               <p>An English word appears at the top.</p>
               <p>Switch lanes to <strong>run through</strong> its Spanish translation!</p>
               <p>↑ ↓ arrow keys · W S · or tap top / bottom</p>
               <p>3 hearts · speed increases with score</p>
+              <p>This runner is parked in Workshop until its verb-conjugation hook is fully built.</p>
             </div>
             {highScore > 0 && <p className="vr-overlay__best">Best: {highScore} words</p>}
             <button className="vr-overlay__btn" onClick={startGame}>▶ Start Running</button>
