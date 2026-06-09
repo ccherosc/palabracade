@@ -1,0 +1,215 @@
+.radar-board {
+  position: relative;
+  min-height: 520px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 22px;
+  background:
+    radial-gradient(circle at center, rgba(20, 184, 166, 0.12), transparent 42%),
+    linear-gradient(180deg, rgba(5, 20, 24, 0.96), rgba(11, 27, 34, 0.98));
+  border: 1px solid rgba(20, 184, 166, 0.2);
+  overflow: hidden;
+}
+
+.radar-board::before {
+  content: '';
+  position: absolute;
+  inset: 10% 12%;
+  border: 1px solid rgba(45, 212, 191, 0.08);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 40px rgba(45, 212, 191, 0.03),
+    0 0 0 80px rgba(45, 212, 191, 0.02);
+  pointer-events: none;
+}
+
+.radar-board__top,
+.radar-board__timers,
+.radar-options {
+  position: relative;
+  z-index: 1;
+}
+
+.radar-board__top {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.radar-board__label,
+.radar-option__eyebrow,
+.radar-meter span,
+.radar-side__pill {
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(198, 255, 245, 0.72);
+  font-weight: 800;
+}
+
+.radar-board__prompt {
+  font-size: clamp(2rem, 6vw, 3.6rem);
+  line-height: 1;
+  margin-top: 0.35rem;
+}
+
+.radar-board__timers {
+  width: min(100%, 320px);
+  display: grid;
+  gap: 0.7rem;
+}
+
+.radar-meter {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.radar-meter__rail {
+  height: 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.radar-meter__fill {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #2dd4bf, #5eead4);
+  box-shadow: 0 0 18px rgba(45, 212, 191, 0.45);
+}
+
+.radar-meter--session .radar-meter__fill {
+  background: linear-gradient(90deg, #f59e0b, #fbbf24);
+  box-shadow: 0 0 18px rgba(251, 191, 36, 0.35);
+}
+
+.radar-feedback {
+  position: relative;
+  z-index: 1;
+  min-height: 54px;
+  padding: 0.95rem 1rem;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+}
+
+.radar-feedback--live {
+  color: #d9fffb;
+}
+
+.radar-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem;
+  margin-top: auto;
+}
+
+.radar-option {
+  min-height: 124px;
+  padding: 1rem;
+  border-radius: 20px;
+  text-align: left;
+  background: rgba(6, 26, 33, 0.88);
+  border: 1px solid rgba(45, 212, 191, 0.18);
+  color: #ecfeff;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.5rem;
+  transition: transform 0.14s ease, border-color 0.14s ease, background 0.14s ease;
+}
+
+.radar-option strong {
+  font-size: clamp(1.2rem, 3vw, 1.6rem);
+}
+
+.radar-option:hover:not(:disabled) {
+  transform: translateY(-3px);
+  border-color: rgba(94, 234, 212, 0.55);
+  background: rgba(8, 37, 46, 0.94);
+}
+
+.radar-side {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.radar-side h2 {
+  font-size: 1.1rem;
+}
+
+.radar-side ul {
+  padding-left: 1rem;
+  color: var(--text-muted);
+  line-height: 1.65;
+}
+
+.radar-side__pill {
+  padding: 0.65rem 0.8rem;
+  border-radius: 16px;
+  border: 1px solid rgba(45, 212, 191, 0.16);
+  background: rgba(45, 212, 191, 0.05);
+}
+
+.radar-overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(3, 11, 18, 0.7);
+  backdrop-filter: blur(6px);
+  z-index: 2;
+}
+
+.radar-overlay__card {
+  width: min(92%, 430px);
+  padding: 1.4rem;
+  border-radius: 24px;
+  text-align: center;
+  background: rgba(4, 20, 27, 0.96);
+  border: 1px solid rgba(45, 212, 191, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.radar-overlay__emoji {
+  font-size: 2.8rem;
+}
+
+.radar-overlay__badge {
+  color: #fbbf24;
+}
+
+@media (max-width: 820px) {
+  .radar-board__top {
+    flex-direction: column;
+  }
+
+  .radar-board__timers,
+  .radar-options {
+    width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .radar-board {
+    min-height: 540px;
+    padding: 0.9rem;
+  }
+
+  .radar-options {
+    grid-template-columns: 1fr;
+  }
+
+  .radar-option {
+    min-height: 102px;
+  }
+}

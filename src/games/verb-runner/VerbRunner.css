@@ -1,5 +1,5 @@
 .vr-game {
-  position: relative; width: 100%; height: 100vh;
+  position: relative; width: 100%; height: 100dvh;
   background: #08081a; display: flex; flex-direction: column; overflow: hidden;
 }
 

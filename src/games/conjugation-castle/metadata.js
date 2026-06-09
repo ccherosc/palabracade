@@ -2,10 +2,10 @@ export default {
   id: 'conjugation-castle',
   title: 'Conjugation Castle',
   titleEs: 'Castillo de Conjugación',
-  status: 'soon',
+  status: 'working',
   ageRange: '10-18',
-  skill: 'Verb conjugation & tenses',
+  skill: 'Verb conjugation speed',
   level: 'Intermediate',
-  description: 'Defend your castle! Select the correct verb form before enemies reach the gate. Battle through present, past, and future tenses.',
+  description: 'Defend the gate across 12 verb waves by choosing the correct conjugation before the wall breaks.',
   route: '/games/conjugation-castle',
 };

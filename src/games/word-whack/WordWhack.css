@@ -1,5 +1,5 @@
 .whack-game {
-  min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
   background: var(--bg-deep);
@@ -249,5 +249,16 @@
 .whack-overlay__best-new { font-size: 0.85rem; color: var(--accent-gold); font-weight: 700; animation: pop-in 0.3s ease; }
 
 @media (max-width: 480px) {
-  .whack-grid { gap: 0.6rem; }
+  .whack-grid {
+    gap: 0.6rem;
+  }
+
+  .whack-hole {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .whack-layout {
+    padding: 1rem 0.75rem 1.5rem;
+  }
 }

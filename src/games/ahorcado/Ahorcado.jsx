@@ -1,106 +1,106 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AudioManager } from '../../engine/AudioManager.js';
 import { ProgressSystem } from '../../engine/ProgressSystem.js';
 import { shuffle } from '../../engine/WordBank.js';
 import './Ahorcado.css';
 
-// ─── Word bank ─────────────────────────────────────────────────────────────
 const WORDS = [
-  { es: 'serpiente', en: 'snake',        cat: 'Animals 🐍' },
-  { es: 'mariposa',  en: 'butterfly',    cat: 'Animals 🦋' },
-  { es: 'tortuga',   en: 'turtle',       cat: 'Animals 🐢' },
-  { es: 'elefante',  en: 'elephant',     cat: 'Animals 🐘' },
-  { es: 'conejo',    en: 'rabbit',       cat: 'Animals 🐰' },
-  { es: 'manzana',   en: 'apple',        cat: 'Food 🍎' },
-  { es: 'naranja',   en: 'orange',       cat: 'Food 🍊' },
-  { es: 'zanahoria', en: 'carrot',       cat: 'Food 🥕' },
-  { es: 'frijoles',  en: 'beans',        cat: 'Food 🫘' },
-  { es: 'platano',   en: 'banana',       cat: 'Food 🍌' },
-  { es: 'mochila',   en: 'backpack',     cat: 'School 🎒' },
-  { es: 'cuaderno',  en: 'notebook',     cat: 'School 📓' },
-  { es: 'maestro',   en: 'teacher',      cat: 'School 👨‍🏫' },
-  { es: 'lapiz',     en: 'pencil',       cat: 'School ✏️' },
-  { es: 'escuela',   en: 'school',       cat: 'Places 🏫' },
-  { es: 'mercado',   en: 'market',       cat: 'Places 🛒' },
-  { es: 'ciudad',    en: 'city',         cat: 'Places 🏙️' },
-  { es: 'jardin',    en: 'garden',       cat: 'Places 🌳' },
-  { es: 'ventana',   en: 'window',       cat: 'Home 🪟' },
-  { es: 'cocina',    en: 'kitchen',      cat: 'Home 🍳' },
-  { es: 'amarillo',  en: 'yellow',       cat: 'Colors 🟡' },
-  { es: 'morado',    en: 'purple',       cat: 'Colors 🟣' },
-  { es: 'hablar',    en: 'to speak',     cat: 'Verbs 💬' },
-  { es: 'correr',    en: 'to run',       cat: 'Verbs 🏃' },
-  { es: 'bailar',    en: 'to dance',     cat: 'Verbs 💃' },
-  { es: 'cantar',    en: 'to sing',      cat: 'Verbs 🎵' },
-  { es: 'cocinar',   en: 'to cook',      cat: 'Verbs 🍳' },
-  { es: 'estudiar',  en: 'to study',     cat: 'Verbs 📚' },
-  { es: 'familia',   en: 'family',       cat: 'Family 👨‍👩‍👧' },
-  { es: 'hermano',   en: 'brother',      cat: 'Family 👦' },
+  { es: 'serpiente', en: 'snake', cat: 'Animals 🐍' },
+  { es: 'mariposa', en: 'butterfly', cat: 'Animals 🦋' },
+  { es: 'tortuga', en: 'turtle', cat: 'Animals 🐢' },
+  { es: 'elefante', en: 'elephant', cat: 'Animals 🐘' },
+  { es: 'conejo', en: 'rabbit', cat: 'Animals 🐰' },
+  { es: 'manzana', en: 'apple', cat: 'Food 🍎' },
+  { es: 'naranja', en: 'orange', cat: 'Food 🍊' },
+  { es: 'zanahoria', en: 'carrot', cat: 'Food 🥕' },
+  { es: 'frijoles', en: 'beans', cat: 'Food 🫘' },
+  { es: 'platano', en: 'banana', cat: 'Food 🍌' },
+  { es: 'mochila', en: 'backpack', cat: 'School 🎒' },
+  { es: 'cuaderno', en: 'notebook', cat: 'School 📓' },
+  { es: 'maestro', en: 'teacher', cat: 'School 👨‍🏫' },
+  { es: 'lapiz', en: 'pencil', cat: 'School ✏️' },
+  { es: 'escuela', en: 'school', cat: 'Places 🏫' },
+  { es: 'mercado', en: 'market', cat: 'Places 🛒' },
+  { es: 'ciudad', en: 'city', cat: 'Places 🏙️' },
+  { es: 'jardin', en: 'garden', cat: 'Places 🌳' },
+  { es: 'ventana', en: 'window', cat: 'Home 🪟' },
+  { es: 'cocina', en: 'kitchen', cat: 'Home 🍳' },
+  { es: 'amarillo', en: 'yellow', cat: 'Colors 🟡' },
+  { es: 'morado', en: 'purple', cat: 'Colors 🟣' },
+  { es: 'hablar', en: 'to speak', cat: 'Verbs 💬' },
+  { es: 'correr', en: 'to run', cat: 'Verbs 🏃' },
+  { es: 'bailar', en: 'to dance', cat: 'Verbs 💃' },
+  { es: 'cantar', en: 'to sing', cat: 'Verbs 🎵' },
+  { es: 'cocinar', en: 'to cook', cat: 'Verbs 🍳' },
+  { es: 'estudiar', en: 'to study', cat: 'Verbs 📚' },
+  { es: 'familia', en: 'family', cat: 'Family 👨‍👩‍👧' },
+  { es: 'hermano', en: 'brother', cat: 'Family 👦' },
 ];
 
 const MAX_WRONG = 6;
 const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZÑ'.split('');
+const KEY_ROWS = ['QWERTYUIOP', 'ASDFGHJKLÑ', 'ZXCVBNM'];
+const AUTO_NEXT_MS = 1600;
 
-// Normalize accents for matching (á→a, é→e, etc.)
 function norm(s) {
   return s.toUpperCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
 }
 
-// Draw hangman on canvas — returns a draw function per wrong count
 function drawHangman(canvas, wrong) {
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
-  const W = canvas.width, H = canvas.height;
+  const W = canvas.width;
+  const H = canvas.height;
   ctx.clearRect(0, 0, W, H);
 
   ctx.strokeStyle = '#94a3b8';
-  ctx.lineWidth   = 3;
-  ctx.lineCap     = 'round';
+  ctx.lineWidth = 3;
+  ctx.lineCap = 'round';
 
-  // Gallows
   ctx.beginPath();
-  ctx.moveTo(W * 0.15, H * 0.92); ctx.lineTo(W * 0.85, H * 0.92); // base
-  ctx.moveTo(W * 0.3,  H * 0.92); ctx.lineTo(W * 0.3,  H * 0.05); // pole
-  ctx.moveTo(W * 0.3,  H * 0.05); ctx.lineTo(W * 0.65, H * 0.05); // beam
-  ctx.moveTo(W * 0.65, H * 0.05); ctx.lineTo(W * 0.65, H * 0.16); // rope
+  ctx.moveTo(W * 0.15, H * 0.92); ctx.lineTo(W * 0.85, H * 0.92);
+  ctx.moveTo(W * 0.3, H * 0.92); ctx.lineTo(W * 0.3, H * 0.05);
+  ctx.moveTo(W * 0.3, H * 0.05); ctx.lineTo(W * 0.65, H * 0.05);
+  ctx.moveTo(W * 0.65, H * 0.05); ctx.lineTo(W * 0.65, H * 0.16);
   ctx.stroke();
 
-  const cx = W * 0.65, hy = H * 0.16;
+  const cx = W * 0.65;
+  const hy = H * 0.16;
   ctx.strokeStyle = wrong >= 6 ? '#ef4444' : '#e2e8f0';
-  ctx.fillStyle   = wrong >= 6 ? 'rgba(239,68,68,0.15)' : 'transparent';
+  ctx.fillStyle = wrong >= 6 ? 'rgba(239,68,68,0.15)' : 'transparent';
 
-  if (wrong >= 1) { // head
+  if (wrong >= 1) {
     ctx.beginPath();
     ctx.arc(cx, hy + H * 0.1, H * 0.09, 0, Math.PI * 2);
     ctx.stroke();
     if (wrong >= 6) ctx.fill();
   }
-  if (wrong >= 2) { // body
+  if (wrong >= 2) {
     ctx.beginPath();
     ctx.moveTo(cx, hy + H * 0.19);
     ctx.lineTo(cx, hy + H * 0.45);
     ctx.stroke();
   }
-  if (wrong >= 3) { // left arm
+  if (wrong >= 3) {
     ctx.beginPath();
     ctx.moveTo(cx, hy + H * 0.24);
     ctx.lineTo(cx - W * 0.12, hy + H * 0.36);
     ctx.stroke();
   }
-  if (wrong >= 4) { // right arm
+  if (wrong >= 4) {
     ctx.beginPath();
     ctx.moveTo(cx, hy + H * 0.24);
     ctx.lineTo(cx + W * 0.12, hy + H * 0.36);
     ctx.stroke();
   }
-  if (wrong >= 5) { // left leg
+  if (wrong >= 5) {
     ctx.beginPath();
     ctx.moveTo(cx, hy + H * 0.45);
     ctx.lineTo(cx - W * 0.12, hy + H * 0.62);
     ctx.stroke();
   }
-  if (wrong >= 6) { // right leg
+  if (wrong >= 6) {
     ctx.beginPath();
     ctx.moveTo(cx, hy + H * 0.45);
     ctx.lineTo(cx + W * 0.12, hy + H * 0.62);
@@ -108,22 +108,32 @@ function drawHangman(canvas, wrong) {
   }
 }
 
-// ─── Component ─────────────────────────────────────────────────────────────
 export default function Ahorcado() {
-  const navigate  = useNavigate();
-  const [phase, setPhase]       = useState('idle');
-  const [word, setWord]         = useState(null);
-  const [guessed, setGuessed]   = useState(new Set());
-  const [wrongCount, setWrong]  = useState(0);
-  const [score, setScore]       = useState(0);
-  const [streak, setStreak]     = useState(0);
-  const [roundWon, setRoundWon] = useState(false);
-  const canvasRef = useRef ? React.useRef(null) : { current: null };
-  const queueRef  = React.useRef([]);
+  const navigate = useNavigate();
+  const [phase, setPhase] = useState('idle');
+  const [word, setWord] = useState(null);
+  const [guessed, setGuessed] = useState(new Set());
+  const [wrongCount, setWrong] = useState(0);
+  const [score, setScore] = useState(0);
+  const [streak, setStreak] = useState(0);
+  const [heat, setHeat] = useState(0);
+  const [categoryStreak, setCategoryStreak] = useState(0);
+  const [lastCategory, setLastCategory] = useState(null);
+  const [roundSummary, setRoundSummary] = useState(null);
+  const [autoAdvanceMs, setAutoAdvanceMs] = useState(0);
+  const canvasRef = useRef(null);
+  const queueRef = useRef([]);
 
   const progress = ProgressSystem.getGame('ahorcado');
+  const normalizedWordLetters = useMemo(
+    () => (word ? word.es.toUpperCase().split('').map(norm) : []),
+    [word],
+  );
+  const normalizedGuesses = useMemo(
+    () => new Set([...guessed].map(norm)),
+    [guessed],
+  );
 
-  // Redraw whenever wrongCount changes
   const canvasRefCb = useCallback((node) => {
     canvasRef.current = node;
     if (node) drawHangman(node, wrongCount);
@@ -133,20 +143,89 @@ export default function Ahorcado() {
     if (canvasRef.current) drawHangman(canvasRef.current, wrongCount);
   }, [wrongCount]);
 
+  useEffect(() => {
+    if (phase !== 'roundWon' || autoAdvanceMs <= 0) return undefined;
+    const timeout = window.setTimeout(() => {
+      setAutoAdvanceMs((ms) => {
+        const next = ms - 100;
+        if (next <= 0) {
+          nextWord();
+          return 0;
+        }
+        return next;
+      });
+    }, 100);
+    return () => window.clearTimeout(timeout);
+  }, [phase, autoAdvanceMs]);
+
   function nextWord() {
     if (queueRef.current.length === 0) queueRef.current = shuffle([...WORDS]);
     const w = queueRef.current.pop();
     setWord(w);
     setGuessed(new Set());
     setWrong(0);
-    setRoundWon(false);
+    setRoundSummary(null);
+    setAutoAdvanceMs(0);
     setPhase('playing');
   }
 
   function startGame() {
-    setScore(0); setStreak(0);
+    setScore(0);
+    setStreak(0);
+    setHeat(0);
+    setCategoryStreak(0);
+    setLastCategory(null);
+    setRoundSummary(null);
+    setAutoAdvanceMs(0);
     queueRef.current = shuffle([...WORDS]);
     nextWord();
+  }
+
+  function finishWin() {
+    const nextStreak = streak + 1;
+    const sameCategory = lastCategory === word.cat;
+    const nextCategoryStreak = sameCategory ? categoryStreak + 1 : 1;
+    const nextHeat = Math.min(heat + 1, 5);
+    const base = (MAX_WRONG - wrongCount) * 15 + 20;
+    const perfectBonus = wrongCount === 0 ? 30 : 0;
+    const categoryBonus = nextCategoryStreak >= 2 ? 15 * (nextCategoryStreak - 1) : 0;
+    const multiplier = 1 + heat * 0.25;
+    const total = Math.round((base + perfectBonus + categoryBonus) * multiplier);
+    const nextScore = score + total;
+
+    setScore(nextScore);
+    setStreak(nextStreak);
+    setHeat(nextHeat);
+    setCategoryStreak(nextCategoryStreak);
+    setLastCategory(word.cat);
+    setRoundSummary({
+      total,
+      base,
+      perfectBonus,
+      categoryBonus,
+      multiplier,
+      perfect: wrongCount === 0,
+      nextCategoryStreak,
+    });
+    setAutoAdvanceMs(AUTO_NEXT_MS);
+    AudioManager.levelUp();
+    ProgressSystem.saveGame('ahorcado', {
+      score: nextScore,
+      streak: nextStreak,
+      heat: nextHeat,
+    });
+    setPhase('roundWon');
+  }
+
+  function finishLoss() {
+    setStreak(0);
+    setHeat(0);
+    setCategoryStreak(0);
+    setLastCategory(null);
+    setRoundSummary(null);
+    AudioManager.gameOver();
+    ProgressSystem.saveGame('ahorcado', { score, streak: 0, heat: 0 });
+    setPhase('roundLost');
   }
 
   function guess(letter) {
@@ -154,62 +233,43 @@ export default function Ahorcado() {
     const nextGuessed = new Set([...guessed, letter]);
     setGuessed(nextGuessed);
 
-    const wordLetters  = word.es.toUpperCase().split('').map(norm);
-    const hit          = wordLetters.includes(norm(letter));
+    const nextNormalizedGuesses = new Set([...nextGuessed].map(norm));
+    const hit = normalizedWordLetters.includes(norm(letter));
 
     if (hit) {
       AudioManager.eat(streak + 1);
-      const allRevealed = wordLetters.every(l => {
-        const isSpecial = !/[A-ZÑÁÉÍÓÚÜ]/.test(l.normalize('NFD')[0]);
-        if (isSpecial) return true; // spaces etc auto-revealed
-        return nextGuessed.has(norm(l) === 'a' ? 'A'
-          : norm(l) === 'e' ? 'E' : norm(l) === 'i' ? 'I'
-          : norm(l) === 'o' ? 'O' : norm(l) === 'u' ? 'U' : l);
-      });
-
-      // Simpler: check if every unique letter in word is guessed
-      const uniqueNorm = [...new Set(wordLetters.filter(l => /[A-ZÁÉÍÓÚÜÑ]/.test(l)))];
-      const allDone    = uniqueNorm.every(nl => [...nextGuessed].some(g => norm(g) === nl));
-
-      if (allDone) {
-        const pts = (MAX_WRONG - wrongCount) * 15 + 20;
-        setScore(s => s + pts);
-        setStreak(k => k + 1);
-        setRoundWon(true);
-        AudioManager.levelUp();
-        ProgressSystem.saveGame('ahorcado', { score: score + pts });
-        setPhase('roundWon');
-      }
-    } else {
-      const next = wrongCount + 1;
-      setWrong(next);
-      AudioManager.wrong();
-      if (navigator.vibrate) navigator.vibrate(60);
-      if (next >= MAX_WRONG) {
-        setStreak(0);
-        AudioManager.gameOver();
-        ProgressSystem.saveGame('ahorcado', { score });
-        setPhase('roundLost');
-      }
+      const uniqueNorm = [...new Set(normalizedWordLetters.filter((l) => /[A-ZÑ]/.test(l)))];
+      const allDone = uniqueNorm.every((nl) => nextNormalizedGuesses.has(nl));
+      if (allDone) finishWin();
+      return;
     }
+
+    const next = wrongCount + 1;
+    setWrong(next);
+    AudioManager.wrong();
+    if (navigator.vibrate) navigator.vibrate(60);
+    if (next >= MAX_WRONG) finishLoss();
   }
 
-  // Keyboard input
   useEffect(() => {
-    if (phase !== 'playing') return;
+    if (phase !== 'playing') return undefined;
     const onKey = (e) => {
       const l = e.key.toUpperCase();
       if (LETTERS.includes(l)) guess(l);
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [phase, guessed, wrongCount, word]);
+  }, [phase, guessed, wrongCount, word, heat, streak, categoryStreak, lastCategory]);
 
-  // Compute display
   const wordLetters = word ? word.es.toUpperCase().split('') : [];
   const wrongLetters = word
-    ? [...guessed].filter(l => !wordLetters.map(norm).includes(norm(l)))
+    ? [...guessed].filter((l) => !normalizedWordLetters.includes(norm(l)))
     : [];
+  const revealedCount = wordLetters.filter(
+    (letter) => /[A-ZÁÉÍÓÚÜÑ]/i.test(letter) && normalizedGuesses.has(norm(letter)),
+  ).length;
+  const totalLetters = wordLetters.filter((letter) => /[A-ZÁÉÍÓÚÜÑ]/i.test(letter)).length;
+  const heatLabel = ['Cold', 'Warm', 'Hot', 'Wild', 'On Fire', 'Untouchable'][heat];
 
   return (
     <div className="ah-game">
@@ -224,27 +284,43 @@ export default function Ahorcado() {
           <div className="ah-overlay__box">
             <div className="ah-overlay__emoji">🪢</div>
             <h2 className="ah-overlay__title">Ahorcado</h2>
-            <p className="ah-overlay__sub">El Ahorcado · Classic Hangman</p>
-            <p className="ah-overlay__desc">Guess the Spanish word letter by letter.<br />
-              You see the English hint + category.<br />
-              6 wrong guesses = game over!</p>
+            <p className="ah-overlay__sub">Classic Hangman · now built for streak chasing</p>
+            <p className="ah-overlay__desc">
+              Chain clean solves, keep your heat alive, and stack same-category wins.
+              One miss too many and the whole heater resets.
+            </p>
             {progress.totalPlays > 0 && <p className="ah-overlay__best">Best: {progress.highScore} pts</p>}
-            <button className="ah-overlay__btn" onClick={startGame}>▶ Start</button>
+            <button className="ah-overlay__btn" onClick={startGame}>▶ Start the streak</button>
           </div>
         </div>
       )}
 
       {(phase === 'playing' || phase === 'roundWon' || phase === 'roundLost') && word && (
         <div className="ah-layout">
-          {/* Left: gallows */}
           <div className="ah-gallows">
+            <div className="ah-status-card">
+              <div className="ah-status-pill ah-status-pill--heat">🔥 {heatLabel}</div>
+              <div className="ah-status-grid">
+                <div className="ah-stat">
+                  <span className="ah-stat__label">Streak</span>
+                  <strong>{streak}</strong>
+                </div>
+                <div className="ah-stat">
+                  <span className="ah-stat__label">Heat</span>
+                  <strong>x{(1 + heat * 0.25).toFixed(2)}</strong>
+                </div>
+                <div className="ah-stat">
+                  <span className="ah-stat__label">Theme run</span>
+                  <strong>x{categoryStreak || 1}</strong>
+                </div>
+              </div>
+            </div>
             <canvas ref={canvasRefCb} width={220} height={260} className="ah-canvas" />
             <div className="ah-wrong-letters">
-              {wrongLetters.map(l => <span key={l} className="ah-wrong-letter">{l}</span>)}
+              {wrongLetters.map((l) => <span key={l} className="ah-wrong-letter">{l}</span>)}
             </div>
           </div>
 
-          {/* Right: word + controls */}
           <div className="ah-right">
             <div className="ah-hint">
               <span className="ah-hint__cat">{word.cat}</span>
@@ -253,10 +329,14 @@ export default function Ahorcado() {
 
             <div className="ah-word">
               {wordLetters.map((letter, i) => {
-                const isAlpha  = /[A-ZÁÉÍÓÚÜÑ]/i.test(letter);
-                const revealed = !isAlpha || [...guessed].some(g => norm(g) === norm(letter)) || phase === 'roundLost';
+                const isAlpha = /[A-ZÁÉÍÓÚÜÑ]/i.test(letter);
+                const revealed = !isAlpha || normalizedGuesses.has(norm(letter)) || phase === 'roundLost';
+                const missed = phase === 'roundLost' && isAlpha && !normalizedGuesses.has(norm(letter));
                 return (
-                  <span key={i} className={`ah-letter ${!isAlpha ? 'ah-letter--space' : ''} ${revealed && isAlpha ? (phase === 'roundLost' && !([...guessed].some(g => norm(g) === norm(letter))) ? 'ah-letter--missed' : 'ah-letter--revealed') : ''}`}>
+                  <span
+                    key={`${letter}-${i}`}
+                    className={`ah-letter ${!isAlpha ? 'ah-letter--space' : ''} ${revealed && isAlpha ? (missed ? 'ah-letter--missed' : 'ah-letter--revealed') : ''}`}
+                  >
                     {!isAlpha ? ' ' : revealed ? letter : '_'}
                   </span>
                 );
@@ -264,38 +344,61 @@ export default function Ahorcado() {
             </div>
 
             <div className="ah-progress">
-              {MAX_WRONG - wrongCount} {MAX_WRONG - wrongCount === 1 ? 'chance' : 'chances'} left
+              <span>{MAX_WRONG - wrongCount} {MAX_WRONG - wrongCount === 1 ? 'chance' : 'chances'} left</span>
+              <span>•</span>
+              <span>{revealedCount}/{totalLetters} letters found</span>
+              {streak > 0 && <><span>•</span><span>streak x{streak}</span></>}
             </div>
 
-            {/* Keyboard */}
             <div className="ah-keyboard">
-              {LETTERS.map(l => {
-                const used     = guessed.has(l);
-                const isWrong  = used && wrongLetters.includes(l);
-                const isRight  = used && !isWrong;
-                return (
-                  <button key={l}
-                    className={`ah-key ${isWrong ? 'ah-key--wrong' : ''} ${isRight ? 'ah-key--right' : ''}`}
-                    onClick={() => guess(l)}
-                    disabled={used || phase !== 'playing'}
-                  >{l}</button>
-                );
-              })}
+              {KEY_ROWS.map((row) => (
+                <div key={row} className="ah-keyboard__row">
+                  {row.split('').map((l) => {
+                    const used = guessed.has(l);
+                    const isWrong = used && wrongLetters.includes(l);
+                    const isRight = used && !isWrong;
+                    return (
+                      <button
+                        key={l}
+                        className={`ah-key ${isWrong ? 'ah-key--wrong' : ''} ${isRight ? 'ah-key--right' : ''}`}
+                        onClick={() => guess(l)}
+                        disabled={used || phase !== 'playing'}
+                        aria-label={`Guess ${l}`}
+                      >
+                        {l}
+                      </button>
+                    );
+                  })}
+                </div>
+              ))}
             </div>
 
-            {/* Round result */}
-            {phase === 'roundWon' && (
+            {phase === 'roundWon' && roundSummary && (
               <div className="ah-result ah-result--won">
-                <span>¡Correcto! +{(MAX_WRONG - wrongCount) * 15 + 20} pts</span>
-                <button className="ah-result__btn" onClick={nextWord}>Next Word →</button>
+                <span>
+                  ¡Correcto! +{roundSummary.total} pts
+                  {roundSummary.perfect ? ' · flawless' : ''}
+                </span>
+                <div className="ah-bonus-strip">
+                  <span>Base {roundSummary.base}</span>
+                  {roundSummary.perfectBonus > 0 && <span>Perfect +{roundSummary.perfectBonus}</span>}
+                  {roundSummary.categoryBonus > 0 && <span>Theme run +{roundSummary.categoryBonus}</span>}
+                  <span>Heat x{roundSummary.multiplier.toFixed(2)}</span>
+                </div>
+                <div className="ah-result__actions">
+                  <button className="ah-result__btn" onClick={nextWord}>Keep the heater →</button>
+                  <span className="ah-result__countdown">Auto-next in {(autoAdvanceMs / 1000).toFixed(1)}s</span>
+                </div>
               </div>
             )}
+
             {phase === 'roundLost' && (
               <div className="ah-result ah-result--lost">
                 <span>The word was: <strong>{word.es}</strong></span>
+                <span className="ah-result__sub">Heat reset. Start a new climb.</span>
                 <div className="ah-result__actions">
-                  <button className="ah-result__btn" onClick={nextWord}>Try Another</button>
-                  <button className="ah-result__btn ah-result__btn--sec" onClick={startGame}>Restart</button>
+                  <button className="ah-result__btn" onClick={nextWord}>Quick rematch</button>
+                  <button className="ah-result__btn ah-result__btn--sec" onClick={startGame}>Fresh run</button>
                 </div>
               </div>
             )}
