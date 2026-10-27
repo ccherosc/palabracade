@@ -1,0 +1,247 @@
+<style>
+  body { margin: 0; padding: 1.5rem; background: #08081a; font-family: 'Nunito', system-ui, sans-serif; color: #e8e8ff; }
+  h2 { font-size: 1rem; margin-bottom: 0.25rem; }
+  .subtitle { color: #666; font-size: 0.8rem; margin-bottom: 1.5rem; }
+
+  .lobby {
+    max-width: 480px; margin: 0 auto;
+    background: #0d0d22; border: 1.5px solid #2e2e5e;
+    border-radius: 16px; overflow: hidden;
+    box-shadow: 0 0 40px rgba(0,0,0,0.5);
+  }
+  .lobby-header {
+    background: linear-gradient(135deg, rgba(34,197,94,0.12) 0%, rgba(168,85,247,0.08) 100%);
+    border-bottom: 1px solid #1e1e3e;
+    padding: 1.25rem 1.5rem;
+    display: flex; align-items: center; gap: 1rem;
+  }
+  .lobby-icon { font-size: 2.2rem; filter: drop-shadow(0 0 12px rgba(34,197,94,0.5)); }
+  .lobby-title { font-size: 1.1rem; font-weight: 800; }
+  .lobby-sub   { font-size: 0.72rem; color: #555; margin-top: 2px; }
+  .back-btn { margin-left: auto; font-size: 0.68rem; color: #555; border: 1px solid #2e2e5e; border-radius: 5px; padding: 4px 10px; cursor: pointer; background: none; color: #555; }
+
+  .lobby-body { padding: 1.25rem 1.5rem; display: flex; flex-direction: column; gap: 1.4rem; }
+  .section-lbl { font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.12em; color: #555; font-weight: 700; margin-bottom: 0.5rem; }
+  hr { border: none; border-top: 1px solid #1a1a2e; margin: 0; }
+
+  /* Bands */
+  .band-list { display: flex; flex-direction: column; gap: 0.45rem; }
+  .band {
+    display: flex; align-items: center; gap: 0.85rem;
+    padding: 0.6rem 0.85rem; border-radius: 9px;
+    border: 1.5px solid #1e1e3e; cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+    background: rgba(255,255,255,0.02);
+  }
+  .band:hover { border-color: #3a3a6a; }
+  .band.selected { border-color: var(--bc); background: var(--bg); }
+  .band-icon { font-size: 1.05rem; width: 22px; text-align: center; }
+  .band-text { flex: 1; }
+  .band-name { font-size: 0.8rem; font-weight: 800; color: var(--bc, #e8e8ff); }
+  .band-desc { font-size: 0.65rem; color: #555; margin-top: 1px; }
+  .band-radio { width: 15px; height: 15px; border-radius: 50%; border: 1.5px solid #2e2e5e; flex-shrink: 0; transition: border-color 0.15s; display:flex;align-items:center;justify-content:center; }
+  .band.selected .band-radio { border-color: var(--bc); }
+  .band.selected .band-radio::after { content:''; width:7px; height:7px; border-radius:50%; background:var(--bc); }
+  .band-easy { --bc:#22c55e; --bg:rgba(34,197,94,0.07); }
+  .band-c1   { --bc:#fbbf24; --bg:rgba(251,191,36,0.07); }
+  .band-c2   { --bc:#f97316; --bg:rgba(249,115,22,0.07); }
+  .band-c3   { --bc:#ef4444; --bg:rgba(239,68,68,0.07); }
+
+  /* ── Speed counter ── */
+  .speed-section { display: flex; align-items: flex-start; gap: 1.25rem; }
+
+  .speed-counter-wrap { display: flex; flex-direction: column; align-items: center; gap: 0; flex-shrink: 0; }
+  .speed-arrow {
+    background: #13132e; border: 1px solid #2e2e5e; color: #e8e8ff;
+    width: 40px; height: 28px; border-radius: 6px;
+    font-size: 0.9rem; font-weight: 700; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.1s, border-color 0.1s;
+    user-select: none;
+  }
+  .speed-arrow:hover { background: #1e1e3e; border-color: #4444aa; }
+  .speed-arrow:active { background: #2a2a50; transform: scale(0.96); }
+  .speed-display {
+    width: 40px; height: 44px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem; font-weight: 800;
+    color: var(--speed-col, #22c55e);
+    font-family: 'Courier New', monospace;
+    border-left: 1px solid #1e1e3e; border-right: 1px solid #1e1e3e;
+    background: #0a0a1c;
+    transition: color 0.2s;
+  }
+
+  .speed-info { flex: 1; padding-top: 4px; }
+  .speed-name {
+    font-size: 1rem; font-weight: 800;
+    color: var(--speed-col, #22c55e);
+    line-height: 1.2;
+    min-height: 1.3em;
+    transition: color 0.2s;
+  }
+  .speed-flavor {
+    font-size: 0.7rem; color: #555; margin-top: 0.3rem; line-height: 1.5;
+    font-style: italic;
+    min-height: 2.4em;
+  }
+  .speed-range { font-size: 0.58rem; color: #333; margin-top: 0.4rem; }
+
+  /* ── Start area ── */
+  .start-area { display: flex; flex-direction: column; gap: 0.5rem; }
+  .start-btn {
+    background: #22c55e; color: #fff;
+    font-weight: 800; font-size: 1rem;
+    border: none; border-radius: 10px;
+    padding: 0.85rem; width: 100%; cursor: pointer;
+    transition: opacity 0.15s, transform 0.15s;
+    letter-spacing: 0.02em;
+  }
+  .start-btn:hover { opacity: 0.9; transform: scale(1.01); }
+  .best-line { text-align: center; font-size: 0.68rem; color: #333; }
+</style>
+
+<h2>Lobby — v2: speed counter + clean start</h2>
+<p class="subtitle">Speed is a stepper from 1–99 with personality names. Start button is clean, best score sits below it.</p>
+
+<div class="lobby">
+  <div class="lobby-header">
+    <div class="lobby-icon">🐍</div>
+    <div>
+      <div class="lobby-title">Sentence Snake</div>
+      <div class="lobby-sub">Serpiente de Sentencias</div>
+    </div>
+    <button class="back-btn">← Menu</button>
+  </div>
+
+  <div class="lobby-body">
+
+    <!-- Difficulty -->
+    <div>
+      <div class="section-lbl">Difficulty — hints &amp; board highlights</div>
+      <div class="band-list">
+        <div class="band band-easy selected" onclick="selectBand(this)">
+          <div class="band-icon">🌟</div>
+          <div class="band-text">
+            <div class="band-name">Easy</div>
+            <div class="band-desc">Next Spanish word glows on the board. Full sentence visible.</div>
+          </div>
+          <div class="band-radio"></div>
+        </div>
+        <div class="band band-c1" onclick="selectBand(this)">
+          <div class="band-icon">⚡</div>
+          <div class="band-text">
+            <div class="band-name">Challenger 1</div>
+            <div class="band-desc">English hint only — you find the Spanish word yourself.</div>
+          </div>
+          <div class="band-radio"></div>
+        </div>
+        <div class="band band-c2" onclick="selectBand(this)">
+          <div class="band-icon">🔥</div>
+          <div class="band-text">
+            <div class="band-name">Challenger 2</div>
+            <div class="band-desc">English sentence only. No hints. Unvisited words hidden.</div>
+          </div>
+          <div class="band-radio"></div>
+        </div>
+        <div class="band band-c3" onclick="selectBand(this)">
+          <div class="band-icon">💀</div>
+          <div class="band-text">
+            <div class="band-name">Challenger 3</div>
+            <div class="band-desc">No hints + decoy words on the board. ¡Buena suerte!</div>
+          </div>
+          <div class="band-radio"></div>
+        </div>
+      </div>
+    </div>
+
+    <hr>
+
+    <!-- Speed counter -->
+    <div>
+      <div class="section-lbl">Speed — independent of difficulty</div>
+      <div class="speed-section">
+        <div class="speed-counter-wrap">
+          <button class="speed-arrow" onclick="changeSpeed(1)">▲</button>
+          <div class="speed-display" id="speed-display">1</div>
+          <button class="speed-arrow" onclick="changeSpeed(-1)">▼</button>
+        </div>
+        <div class="speed-info">
+          <div class="speed-name" id="speed-name">Glacial</div>
+          <div class="speed-flavor" id="speed-flavor">Plenty of time to think about your life choices.</div>
+          <div class="speed-range">1 – 99 &nbsp;·&nbsp; hold arrow to ramp</div>
+        </div>
+      </div>
+    </div>
+
+    <hr>
+
+    <!-- Start -->
+    <div class="start-area">
+      <button class="start-btn">▶ Start Game</button>
+      <div class="best-line">Your best: — pts &nbsp;·&nbsp; 0 plays</div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  let speed = 1;
+
+  const SPEED_DATA = [
+    { min:  1, max:  9, name: 'Glacial',              flavor: 'Plenty of time to think about your life choices.',         color: '#22c55e' },
+    { min: 10, max: 19, name: 'Sunday Stroll',         flavor: 'The snake is wearing sandals.',                            color: '#4ade80' },
+    { min: 20, max: 29, name: 'Warming Up',            flavor: 'Light stretching. Very responsible.',                      color: '#86efac' },
+    { min: 30, max: 39, name: 'Jogging Pace',          flavor: 'You could do this. You\'re an athlete now.',              color: '#fbbf24' },
+    { min: 40, max: 49, name: 'Getting Spicy 🌶',      flavor: 'The snake smells blood.',                                  color: '#f59e0b' },
+    { min: 50, max: 59, name: 'Half Loco',             flavor: 'Your palms are getting sweaty.',                           color: '#f97316' },
+    { min: 60, max: 69, name: 'Zoom Zoom 🏎',          flavor: 'The words are beginning to blur together.',                color: '#ea580c' },
+    { min: 70, max: 79, name: 'Hold Onto Your Hat',    flavor: 'This is fine. Everything is fine.',                        color: '#ef4444' },
+    { min: 80, max: 89, name: 'Absolutely Unhinged',   flavor: 'Your Spanish teacher is watching in horror.',              color: '#dc2626' },
+    { min: 90, max: 98, name: 'What Is Wrong With You',flavor: 'The snake has become the words.',                          color: '#a855f7' },
+    { min: 99, max: 99, name: 'LUDICROUS SPEED 🚀',    flavor: 'You have gone plaid. Chapó. We can\'t help you now.',     color: '#ec4899' },
+  ];
+
+  function getSpeedData(n) {
+    return SPEED_DATA.find(d => n >= d.min && n <= d.max) || SPEED_DATA[0];
+  }
+
+  function updateDisplay() {
+    const d = getSpeedData(speed);
+    document.getElementById('speed-display').textContent = speed;
+    document.getElementById('speed-display').style.setProperty('--speed-col', d.color);
+    document.getElementById('speed-name').textContent = d.name;
+    document.getElementById('speed-name').style.setProperty('--speed-col', d.color);
+    document.getElementById('speed-name').style.color = d.color;
+    document.getElementById('speed-flavor').textContent = d.flavor;
+    // Pulse the counter
+    const disp = document.getElementById('speed-display');
+    disp.style.transform = 'scale(1.15)';
+    setTimeout(() => disp.style.transform = '', 100);
+  }
+
+  function changeSpeed(delta) {
+    speed = Math.min(99, Math.max(1, speed + delta));
+    updateDisplay();
+  }
+
+  // Hold-to-repeat
+  let holdTimer, holdInterval;
+  document.querySelectorAll('.speed-arrow').forEach(btn => {
+    const delta = btn.textContent === '▲' ? 1 : -1;
+    btn.addEventListener('mousedown', () => {
+      holdTimer = setTimeout(() => {
+        holdInterval = setInterval(() => changeSpeed(delta), 60);
+      }, 400);
+    });
+    btn.addEventListener('mouseup',   () => { clearTimeout(holdTimer); clearInterval(holdInterval); });
+    btn.addEventListener('mouseleave',() => { clearTimeout(holdTimer); clearInterval(holdInterval); });
+  });
+
+  function selectBand(el) {
+    document.querySelectorAll('.band').forEach(b => b.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  updateDisplay();
+</script>

@@ -1,0 +1,204 @@
+<style>
+  body { margin: 0; padding: 1.5rem; background: #08081a; font-family: 'Nunito', system-ui, sans-serif; color: #e8e8ff; }
+  h2 { font-size: 1rem; margin-bottom: 0.25rem; }
+  .subtitle { color: #666; font-size: 0.8rem; margin-bottom: 1.5rem; }
+
+  /* Lobby card */
+  .lobby {
+    max-width: 480px;
+    margin: 0 auto;
+    background: #0d0d22;
+    border: 1.5px solid #2e2e5e;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 0 40px rgba(0,0,0,0.5);
+  }
+
+  .lobby-header {
+    background: linear-gradient(135deg, rgba(34,197,94,0.12) 0%, rgba(168,85,247,0.08) 100%);
+    border-bottom: 1px solid #1e1e3e;
+    padding: 1.25rem 1.5rem;
+    display: flex; align-items: center; gap: 1rem;
+  }
+  .lobby-icon { font-size: 2.2rem; filter: drop-shadow(0 0 12px rgba(34,197,94,0.5)); }
+  .lobby-title { font-size: 1.1rem; font-weight: 800; color: #e8e8ff; }
+  .lobby-sub   { font-size: 0.72rem; color: #555; margin-top: 2px; }
+  .back-btn { margin-left: auto; font-size: 0.68rem; color: #555; border: 1px solid #2e2e5e; border-radius: 5px; padding: 4px 10px; cursor: pointer; background: none; }
+
+  .lobby-body { padding: 1.25rem 1.5rem; display: flex; flex-direction: column; gap: 1.5rem; }
+
+  /* Section label */
+  .section-lbl { font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.12em; color: #555; font-weight: 700; margin-bottom: 0.5rem; }
+
+  /* Difficulty bands */
+  .band-list { display: flex; flex-direction: column; gap: 0.5rem; }
+  .band {
+    display: flex; align-items: center; gap: 0.85rem;
+    padding: 0.65rem 0.85rem;
+    border-radius: 9px;
+    border: 1.5px solid #1e1e3e;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+    background: rgba(255,255,255,0.02);
+  }
+  .band:hover { border-color: #3a3a6a; }
+  .band.selected { border-color: var(--bc); background: var(--bg); }
+  .band-icon { font-size: 1.1rem; width: 24px; text-align: center; }
+  .band-text { flex: 1; }
+  .band-name { font-size: 0.82rem; font-weight: 800; color: var(--bc, #e8e8ff); }
+  .band-desc { font-size: 0.68rem; color: #555; margin-top: 1px; line-height: 1.3; }
+  .band-radio {
+    width: 16px; height: 16px; border-radius: 50%;
+    border: 1.5px solid #2e2e5e;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: border-color 0.15s;
+  }
+  .band.selected .band-radio { border-color: var(--bc); }
+  .band.selected .band-radio::after {
+    content: ''; width: 8px; height: 8px; border-radius: 50%;
+    background: var(--bc);
+  }
+
+  .band-easy { --bc: #22c55e; --bg: rgba(34,197,94,0.07); }
+  .band-c1   { --bc: #fbbf24; --bg: rgba(251,191,36,0.07); }
+  .band-c2   { --bc: #f97316; --bg: rgba(249,115,22,0.07); }
+  .band-c3   { --bc: #ef4444; --bg: rgba(239,68,68,0.07); }
+
+  /* Speed control */
+  .speed-row { display: flex; align-items: center; gap: 0.75rem; }
+  .speed-track { display: flex; gap: 6px; flex: 1; }
+  .speed-pip {
+    flex: 1; height: 8px; border-radius: 99px;
+    background: #1a1a2e; border: 1px solid #2e2e5e;
+    cursor: pointer; transition: background 0.15s, border-color 0.15s;
+  }
+  .speed-pip.on { background: var(--speed-color, #22c55e); border-color: var(--speed-color, #22c55e); }
+  .speed-label { font-size: 0.72rem; font-weight: 700; color: #e8e8ff; min-width: 60px; }
+  .speed-desc  { font-size: 0.65rem; color: #555; min-width: 56px; text-align: right; }
+
+  /* Start button */
+  .start-btn {
+    background: #22c55e;
+    color: #fff; font-weight: 800; font-size: 1rem;
+    border: none; border-radius: 10px;
+    padding: 0.85rem;
+    width: 100%; cursor: pointer;
+    transition: opacity 0.15s, transform 0.15s;
+    letter-spacing: 0.02em;
+  }
+  .start-btn:hover { opacity: 0.9; transform: scale(1.01); }
+
+  .best-line { text-align: center; font-size: 0.68rem; color: #333; margin-top: -0.75rem; }
+
+  /* Divider */
+  hr { border: none; border-top: 1px solid #1a1a2e; margin: 0; }
+</style>
+
+<h2>Sentence Snake — Lobby Screen</h2>
+<p class="subtitle">Difficulty and speed are independent controls. Pick your band, then dial your pace.</p>
+
+<div class="lobby">
+  <div class="lobby-header">
+    <div class="lobby-icon">🐍</div>
+    <div>
+      <div class="lobby-title">Sentence Snake</div>
+      <div class="lobby-sub">Serpiente de Sentencias</div>
+    </div>
+    <button class="back-btn">← Menu</button>
+  </div>
+
+  <div class="lobby-body">
+
+    <!-- Difficulty -->
+    <div>
+      <div class="section-lbl">Difficulty — controls hints &amp; highlights</div>
+      <div class="band-list">
+        <div class="band band-easy selected" onclick="selectBand(this, '#22c55e')">
+          <div class="band-icon">🌟</div>
+          <div class="band-text">
+            <div class="band-name">Easy</div>
+            <div class="band-desc">Next Spanish word glows on the board. Full sentence visible.</div>
+          </div>
+          <div class="band-radio"></div>
+        </div>
+        <div class="band band-c1" onclick="selectBand(this, '#fbbf24')">
+          <div class="band-icon">⚡</div>
+          <div class="band-text">
+            <div class="band-name">Challenger 1</div>
+            <div class="band-desc">English hint shown — you find the Spanish word yourself.</div>
+          </div>
+          <div class="band-radio"></div>
+        </div>
+        <div class="band band-c2" onclick="selectBand(this, '#f97316')">
+          <div class="band-icon">🔥</div>
+          <div class="band-text">
+            <div class="band-name">Challenger 2</div>
+            <div class="band-desc">English sentence only. No hints. Unvisited words hidden.</div>
+          </div>
+          <div class="band-radio"></div>
+        </div>
+        <div class="band band-c3" onclick="selectBand(this, '#ef4444')">
+          <div class="band-icon">💀</div>
+          <div class="band-text">
+            <div class="band-name">Challenger 3</div>
+            <div class="band-desc">No hints + decoy words mixed in. ¡Buena suerte!</div>
+          </div>
+          <div class="band-radio"></div>
+        </div>
+      </div>
+    </div>
+
+    <hr>
+
+    <!-- Speed -->
+    <div>
+      <div class="section-lbl">Speed — independent of difficulty</div>
+      <div class="speed-row">
+        <div class="speed-desc" id="speed-desc" style="text-align:left;min-width:48px;color:#888;font-size:0.68rem">Relaxed</div>
+        <div class="speed-track" id="speed-track">
+          <div class="speed-pip on" onclick="setSpeed(1)" style="--speed-color:#22c55e"></div>
+          <div class="speed-pip"   onclick="setSpeed(2)"></div>
+          <div class="speed-pip"   onclick="setSpeed(3)"></div>
+          <div class="speed-pip"   onclick="setSpeed(4)"></div>
+        </div>
+        <div class="speed-label" id="speed-label">Speed 1</div>
+      </div>
+    </div>
+
+    <hr>
+
+    <!-- Start -->
+    <div>
+      <button class="start-btn" id="start-btn">▶ Start Game</button>
+      <p class="best-line">Your best: — pts &nbsp;|&nbsp; 0 plays</p>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const SPEED_NAMES = ['Relaxed', 'Normal', 'Fast', 'Full Speed'];
+  const SPEED_COLORS = ['#22c55e', '#fbbf24', '#f97316', '#ef4444'];
+  let currentSpeed = 1;
+
+  function selectBand(el, color) {
+    document.querySelectorAll('.band').forEach(b => b.classList.remove('selected'));
+    el.classList.add('selected');
+    const name = el.querySelector('.band-name').textContent;
+    document.getElementById('start-btn').textContent = '▶ Start — ' + name;
+  }
+
+  function setSpeed(n) {
+    currentSpeed = n;
+    const pips = document.querySelectorAll('.speed-pip');
+    pips.forEach((p, i) => {
+      const on = i < n;
+      p.classList.toggle('on', on);
+      p.style.setProperty('--speed-color', SPEED_COLORS[n - 1]);
+    });
+    document.getElementById('speed-label').textContent = 'Speed ' + n;
+    document.getElementById('speed-desc').textContent = SPEED_NAMES[n - 1];
+    document.getElementById('speed-desc').style.color = SPEED_COLORS[n - 1];
+  }
+</script>
